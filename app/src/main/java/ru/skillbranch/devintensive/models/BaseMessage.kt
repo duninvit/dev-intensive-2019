@@ -21,12 +21,12 @@ abstract class BaseMessage(
             type: String = "text",
             payload: Any?,
             isIncoming: Boolean = false
-        ): String {
+        ): BaseMessage {
             lastId++
             return when (type) {
                 "image" -> ImageMessage("$lastId", from, chat, isIncoming, date, payload as String)
                 else -> TextMessage("$lastId", from, chat, isIncoming, date, payload as String)
-            }.formatMessage()
+            }
         }
     }
 }
