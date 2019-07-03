@@ -36,44 +36,41 @@ fun Date.humanizeDiff(date: Date = Date()): String {
         in 0 * SECOND..1 * SECOND -> "только что"
         in 1 * SECOND..45 * SECOND -> if (past) "несколько секунд назад" else "через несколько секунд"
         in 45 * SECOND..75 * SECOND -> if (past) "минуту назад" else "через минуту"
-        in 75 * SECOND..45 * MINUTE -> if (past)
-            "${diff / MINUTE} ${TimeUnits.MINUTE.pluralize(diff / MINUTE)} назад"
-        else "через ${diff / MINUTE} ${TimeUnits.MINUTE.pluralize(diff / MINUTE)}"
+        in 75 * SECOND..45 * MINUTE -> if (past) "${TimeUnits.MINUTE.plural((diff / MINUTE).toInt())} назад"
+        else "через ${TimeUnits.MINUTE.plural((diff / MINUTE).toInt())}"
         in 45 * MINUTE..75 * MINUTE -> if (past) "час назад" else "через час"
-        in 75 * MINUTE..22 * HOUR -> if (past)
-            "${diff / HOUR} ${TimeUnits.HOUR.pluralize(diff / HOUR)} назад"
-        else "через ${diff / HOUR} ${TimeUnits.HOUR.pluralize(diff / HOUR)}"
+        in 75 * MINUTE..22 * HOUR -> if (past) "${TimeUnits.HOUR.plural((diff / HOUR).toInt())} назад"
+        else "через ${TimeUnits.HOUR.plural((diff / HOUR).toInt())}"
         in 22 * HOUR..26 * HOUR -> if (past) "день назад" else "через день"
-        in 22 * HOUR..360 * DAY -> if (past)
-            "${diff / DAY} ${TimeUnits.DAY.pluralize(diff / DAY)} назад"
-        else "через ${diff / DAY} ${TimeUnits.DAY.pluralize(diff / DAY)}"
+        in 22 * HOUR..360 * DAY -> if (past) "${TimeUnits.DAY.plural((diff / DAY).toInt())} назад"
+        else "через ${TimeUnits.DAY.plural((diff / DAY).toInt())}"
         else -> if (past) "более года назад" else "более чем через год"
     }
 }
 
 enum class TimeUnits {
     SECOND {
-        override fun pluralize(value: Long): String {
-            return ""
+        override fun plural(value: Int): String {
+            return "$value ${commonPluralize(value, "секунд", "секунды", "секунду")}"
         }
     },
     MINUTE {
-        override fun pluralize(value: Long): String {
-            return commonPluralize(value.toInt(), "минут", "минуты", "минута")
+        override fun plural(value: Int): String {
+            return "$value ${commonPluralize(value, "минут", "минуты", "минуту")}"
         }
     },
     HOUR {
-        override fun pluralize(value: Long): String {
-            return commonPluralize(value.toInt(), "часов", "часа", "час")
+        override fun plural(value: Int): String {
+            return "$value ${commonPluralize(value, "часов", "часа", "час")}"
         }
     },
     DAY {
-        override fun pluralize(value: Long): String {
-            return commonPluralize(value.toInt(), "дней", "дня", "день")
+        override fun plural(value: Int): String {
+            return "$value ${commonPluralize(value, "дней", "дня", "день")}"
         }
     };
 
-    abstract fun pluralize(value: Long): String
+    abstract fun plural(value: Int): String
 
     fun commonPluralize(value: Int, many: String, few: String, one: String): String {
         return when (val lastValue = abs(value)) {
